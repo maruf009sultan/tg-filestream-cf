@@ -1,0 +1,47 @@
+# ============================================================================
+# TG FileStream PRO — Cloudflare Workers config
+# Docs: https://developers.cloudflare.com/workers/configuration/
+# ============================================================================
+
+name = "telegram-file-stream-pro"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+# ---------------------------------------------------------------- vars ------
+# Non-secret settings can live here. SECRETS (tokens, keys) should be set with
+#   npx wrangler secret put BOT_TOKEN      (or via Dashboard → Settings → Variables)
+[vars]
+BOT_CHANNEL = "-1001234567890"      # storage channel id (bot must be admin with post+edit rights)
+OWNER_IDS = "1234567890"            # your telegram user id (comma-separated for multiple)
+PUBLIC_BOT = "false"                # true = anyone may upload (be careful)
+WEBHOOK_PATH = "/webhook"           # keep as-is unless you have a reason
+BOT_API_BASE = "https://api.telegram.org"  # point to a self-hosted Bot API server to unlock >20 MB files
+AUTO_CHANNEL_LINK = "true"          # auto reply with links when files are posted in channels
+ENABLE_INLINE = "true"              # @bot payload inline resending
+ENABLE_LEGACY = "true"              # keep old ?file=<hash> links alive
+MAX_REMOTE_MB = "50"                # cap for /upload <url>
+BOT_NAME = "TG FileStream PRO"
+# BOT_USERNAME = "yourbot"          # optional: skip a getMe call on the landing page
+
+# ---- v3 ULTRA (all optional) -------------------------------------------------
+DEFAULT_LANG = "en"                 # en | id | zh | es | hi | ar | ru | pt
+INDEX_ENABLED = "true"              # catalog self-replies in the storage channel
+ENABLE_QR = "true"                  # /qr command + QR button + watch page QR
+ENABLE_MINI_APP = "true"            # /app dashboard + menu button registration
+# FORCE_SUB_CHANNEL = "-1009876543210"  # users must join before the bot serves them
+# FORCE_SUB_URL = "https://t.me/joinchat/xxxx"  # invite link if the channel is private
+# ALLOWED_REFERRERS = "mysite.com,other.org"    # hotlink protection (off = allow all)
+# RATE_LIMIT_RPM = "120"            # per-IP requests/min on stream/dl/watch (off = unlimited)
+# TURNSTILE_SITE_KEY = "0x..."      # optional captcha gate (needs both keys)
+# TURNSTILE_SECRET_KEY = "0x..."
+
+# ------------------------------------------------------- secrets (set via) --
+#   npx wrangler secret put BOT_TOKENS        # "token1,token2,..." (or single BOT_TOKEN)
+#   npx wrangler secret put LINK_SECRET       # HMAC secret for link signatures
+#   npx wrangler secret put WEBHOOK_SECRET    # Telegram webhook validation secret
+#   npx wrangler secret put ADMIN_KEY         # guards /registerWebhook
+#   npx wrangler secret put LEGACY_SECRET     # only needed if migrating old ?file= hashes
+#                                             # (set it to the OLD SIA_SECRET value)
+#
+# Optional env aliases kept for drop-in compatibility with Vauth/filestream-cf:
+#   SIA_SECRET is accepted as LINK_SECRET/LEGACY_SECRET fallback.
